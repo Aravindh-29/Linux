@@ -1262,3 +1262,337 @@ Now Linux networking base built.
 
 From here → Docker & K8s will make sense 10x better 💪🔥
 
+
+Mava 🔥 now we go one level deeper.
+Until now → server working.
+Now → how software gets installed, updated, and how logs help you debug production like senior engineer.
+
+Today:
+
+# 📖 LINUX TEXTBOOK – PART 6
+
+# 📦 Package Management + 🔎 Advanced Logs + ⚡ Performance Basics
+
+This is daily DevOps work.
+
+---
+
+# 🟢 1️⃣ Package Management (How Software Comes Into Server)
+
+Linux doesn’t download `.exe` like Windows.
+
+It uses **package managers**.
+
+### Ubuntu / Debian → `apt`
+
+### RHEL / CentOS → `yum` or `dnf`
+
+---
+
+## 🔹 Ubuntu / Debian Commands
+
+Update package list:
+
+```bash
+sudo apt update
+```
+
+Upgrade system:
+
+```bash
+sudo apt upgrade
+```
+
+Install package:
+
+```bash
+sudo apt install nginx
+```
+
+Remove package:
+
+```bash
+sudo apt remove nginx
+```
+
+---
+
+## 🔹 RHEL / CentOS
+
+```bash
+sudo yum install nginx
+sudo yum update
+```
+
+---
+
+## 🔥 Real DevOps Scenario
+
+App not working after update.
+
+You check:
+
+```bash
+apt history
+```
+
+Or:
+
+```bash
+cat /var/log/apt/history.log
+```
+
+You see recent upgrade broke dependency.
+
+Solution:
+Rollback or install specific version:
+
+```bash
+sudo apt install nginx=1.18.0
+```
+
+---
+
+# 🟢 2️⃣ Advanced Log Analysis (Very Important)
+
+Logs = truth.
+
+All debugging starts with logs.
+
+---
+
+## 🔹 System Logs
+
+```bash
+journalctl -xe
+```
+
+See specific service logs:
+
+```bash
+journalctl -u nginx
+```
+
+Live logs:
+
+```bash
+journalctl -u nginx -f
+```
+
+---
+
+## 🔹 Application Logs
+
+Usually inside:
+
+```bash
+/var/log/
+```
+
+Example:
+
+```bash
+tail -f /var/log/nginx/error.log
+```
+
+---
+
+## 🔥 Powerful Log Searching
+
+Search error keyword:
+
+```bash
+grep -i error /var/log/nginx/error.log
+```
+
+Search multiple files:
+
+```bash
+grep -i error /var/log/*
+```
+
+Count errors:
+
+```bash
+grep -c error file.log
+```
+
+This is how you debug production fast.
+
+---
+
+# 🟢 3️⃣ Understanding Load & Performance
+
+## Check CPU & Load
+
+```bash
+uptime
+```
+
+Output:
+
+```
+load average: 1.20 0.80 0.60
+```
+
+If server has 1 CPU:
+Load > 1 → overloaded.
+
+If 4 CPUs:
+Load 4 = full usage.
+
+---
+
+## Check CPU cores
+
+```bash
+nproc
+```
+
+---
+
+## Detailed CPU usage
+
+```bash
+top
+```
+
+Press:
+
+* `P` → sort by CPU
+* `M` → sort by memory
+
+---
+
+# 🟢 4️⃣ Disk IO (Often Ignored)
+
+Sometimes CPU normal.
+Memory normal.
+But server slow.
+
+Reason → Disk IO.
+
+Install:
+
+```bash
+sudo apt install iotop
+```
+
+Run:
+
+```bash
+sudo iotop
+```
+
+Shows which process using disk heavily.
+
+---
+
+# 🟢 5️⃣ Memory Leak Detection
+
+If memory continuously decreasing:
+
+Check:
+
+```bash
+watch free -m
+```
+
+If used memory increasing constantly → memory leak.
+
+Restart service temporarily.
+
+Root cause later.
+
+---
+
+# 🟢 6️⃣ Important DevOps Tools (Must Know)
+
+| Tool         | Purpose      |
+| ------------ | ------------ |
+| top          | CPU & memory |
+| htop         | Better top   |
+| iotop        | Disk usage   |
+| netstat / ss | Ports        |
+| journalctl   | Logs         |
+| df           | Disk usage   |
+| du           | Folder size  |
+| lsof         | Open files   |
+
+---
+
+## 🔥 lsof – Very Important
+
+See which process using port 80:
+
+```bash
+sudo lsof -i :80
+```
+
+If port conflict error in Docker → use this.
+
+---
+
+# 🟢 7️⃣ Real Production Debugging Flow (Senior Level)
+
+App slow.
+
+Check in order:
+
+1️⃣ `uptime`
+2️⃣ `top`
+3️⃣ `free -m`
+4️⃣ `df -h`
+5️⃣ `iotop`
+6️⃣ `journalctl -xe`
+7️⃣ `ss -tulnp`
+
+Never randomly restart.
+
+Observe first.
+
+---
+
+# 🧠 Important Mindset
+
+Junior engineer:
+Restart and pray.
+
+Senior engineer:
+Observe → Identify → Confirm → Fix → Prevent.
+
+---
+
+# 🎯 Practical Tasks Now
+
+Run:
+
+```bash
+apt list --installed | head
+journalctl -xe | tail
+uptime
+nproc
+top
+df -h
+```
+
+Tell me:
+
+* CPU cores?
+* Load average?
+* Disk usage?
+* Any recent errors?
+
+---
+
+Next lesson we go into:
+
+👉 Boot process deep internals
+👉 Kernel tuning basics
+👉 Environment variables
+👉 Bash scripting foundation
+👉 How CI/CD uses Linux internally
+
+Now we are almost ready to enter Docker level soon 💪🔥
+
+
