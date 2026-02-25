@@ -552,3 +552,713 @@ If you want next:
 Tell me what you want next 💪🔥
 
 
+
+Mava 🔥 super… now we are entering **real DevOps Linux zone**.
+
+Today’s lesson:
+
+# 📖 LINUX TEXTBOOK – PART 4
+
+# 💾 Disk Management + Memory + CPU + Process Debugging + Cron Jobs
+
+This is where real production problems happen.
+
+---
+
+# 🟢 1️⃣ Disk Management (Most Common Production Issue)
+
+### First Command Every DevOps Engineer Runs:
+
+```bash
+df -h
+```
+
+Example output:
+
+```
+Filesystem      Size  Used  Avail  Use%  Mounted on
+/dev/sda1        20G   18G   1G     95%   /
+```
+
+If **Use% > 90%** → Danger 🚨
+
+Server slow, Docker fails, database crashes.
+
+---
+
+## 🔍 Check Which Folder Is Using Space
+
+```bash
+du -sh /*
+```
+
+Find large folder.
+
+Example:
+
+```
+/var  → 15G
+```
+
+Then check:
+
+```bash
+du -sh /var/*
+```
+
+Usually problem:
+
+* `/var/log`
+* Docker images
+* Old backups
+
+---
+
+## 🔥 Real DevOps Scenario
+
+Docker not starting.
+
+You check:
+
+```bash
+systemctl status docker
+```
+
+Error: No space left on device.
+
+Fix:
+
+```bash
+docker system prune -a
+```
+
+Or clear logs:
+
+```bash
+sudo journalctl --vacuum-time=7d
+```
+
+---
+
+# 🟢 2️⃣ Disk Partitions & Mounting
+
+See disks:
+
+```bash
+lsblk
+```
+
+See mounted partitions:
+
+```bash
+mount
+```
+
+If new disk added in cloud (AWS EC2 or Azure VM):
+
+Steps:
+
+1. Format disk:
+
+```bash
+sudo mkfs.ext4 /dev/xvdf
+```
+
+2. Create mount point:
+
+```bash
+sudo mkdir /data
+```
+
+3. Mount:
+
+```bash
+sudo mount /dev/xvdf /data
+```
+
+4. Permanent mount:
+   Edit:
+
+```bash
+/etc/fstab
+```
+
+---
+
+# 🟢 3️⃣ Memory Management
+
+Check memory:
+
+```bash
+free -m
+```
+
+Example:
+
+```
+Total: 4096MB
+Used: 3900MB
+Free: 100MB
+```
+
+High memory → app crash.
+
+---
+
+## 🔥 Check Which Process Using Memory
+
+```bash
+top
+```
+
+or
+
+```bash
+htop
+```
+
+Sort by memory.
+
+If Java using 3GB → investigate.
+
+---
+
+# 🟢 4️⃣ CPU Troubleshooting
+
+Check load:
+
+```bash
+uptime
+```
+
+Example:
+
+```
+load average: 3.50 2.10 1.80
+```
+
+If server has 2 CPUs:
+
+Load > 2 → overloaded.
+
+Check top:
+
+```bash
+top
+```
+
+See %CPU column.
+
+---
+
+## Kill High CPU Process
+
+```bash
+kill PID
+```
+
+Graceful first.
+
+---
+
+# 🟢 5️⃣ Deep Process Debugging
+
+See process tree:
+
+```bash
+pstree
+```
+
+See process details:
+
+```bash
+ps aux | grep nginx
+```
+
+See open ports:
+
+```bash
+ss -tulnp
+```
+
+Example:
+
+```
+tcp  LISTEN  0  128  0.0.0.0:80
+```
+
+Means nginx listening on port 80.
+
+---
+
+# 🟢 6️⃣ Cron Jobs (Automation Heart of DevOps)
+
+Cron = scheduled tasks.
+
+Edit cron:
+
+```bash
+crontab -e
+```
+
+Example entry:
+
+```
+0 2 * * * /home/aravindh/backup.sh
+```
+
+Meaning:
+
+Every day 2 AM run backup.sh.
+
+---
+
+## Cron Format
+
+```
+* * * * *
+| | | | |
+| | | | └── Day of week
+| | | └──── Month
+| | └────── Day
+| └──────── Hour
+└────────── Minute
+```
+
+---
+
+## Real DevOps Example
+
+Daily DB backup.
+
+Create script:
+
+```bash
+nano backup.sh
+```
+
+Content:
+
+```bash
+#!/bin/bash
+tar -czf /backup/data_$(date +%F).tar.gz /data
+```
+
+Give permission:
+
+```bash
+chmod +x backup.sh
+```
+
+Add to cron:
+
+```bash
+crontab -e
+```
+
+Now automated backup.
+
+---
+
+# 🟢 7️⃣ Real Production Debugging Flow
+
+Website slow.
+
+You check:
+
+1️⃣ `uptime`
+2️⃣ `top`
+3️⃣ `free -m`
+4️⃣ `df -h`
+5️⃣ `systemctl status nginx`
+6️⃣ `journalctl -xe`
+
+This is standard DevOps debugging pattern.
+
+---
+
+# 🧠 Senior Engineer Thinking
+
+Don’t randomly restart.
+
+First observe:
+
+* CPU?
+* Memory?
+* Disk?
+* Logs?
+* Ports?
+
+Then decide.
+
+---
+
+# 🎯 Practical Tasks Now
+
+Run these:
+
+```bash
+df -h
+du -sh /var/*
+free -m
+uptime
+top
+ss -tulnp
+crontab -l
+```
+
+Tell me:
+
+* Disk usage %
+* Memory usage
+* Load average
+
+Next lesson we go into:
+
+👉 Networking deep (IP, DNS, routing, firewall)
+👉 Reverse proxy (Nginx architecture)
+👉 How Kubernetes networking works
+
+Now we are entering serious DevOps zone mava 💪🔥
+
+
+
+
+Mava 🔥 now we enter **serious DevOps core**.
+
+Until now → server inside.
+Now → how servers talk to each other.
+
+Today:
+
+# 📖 LINUX TEXTBOOK – PART 5
+
+# 🌐 Networking Deep Dive (Real DevOps Level)
+
+If networking strong →
+Docker, Kubernetes, Cloud debugging becomes easy.
+
+---
+
+# 🟢 1️⃣ What Is an IP Address?
+
+IP = Identity of a machine in network.
+
+Two types:
+
+* Private IP (inside network)
+* Public IP (internet facing)
+
+Check your IP:
+
+```bash
+ip addr
+```
+
+or
+
+```bash
+hostname -I
+```
+
+You’ll see something like:
+
+```
+192.168.1.10
+```
+
+---
+
+# 🟢 2️⃣ What Is a Port?
+
+IP identifies machine.
+Port identifies application.
+
+Example:
+
+* 22 → SSH
+* 80 → HTTP
+* 443 → HTTPS
+* 3306 → MySQL
+* 8080 → App servers
+
+Check listening ports:
+
+```bash
+ss -tulnp
+```
+
+Example output:
+
+```
+tcp LISTEN 0 128 0.0.0.0:80
+```
+
+Means:
+Port 80 open.
+
+---
+
+# 🟢 3️⃣ DNS – Very Important in DevOps
+
+DNS converts:
+
+```
+google.com → 142.250.x.x
+```
+
+Check DNS resolution:
+
+```bash
+nslookup google.com
+```
+
+or
+
+```bash
+dig google.com
+```
+
+Real issue example:
+
+App cannot connect to database.
+
+You check:
+
+```bash
+nslookup db.internal
+```
+
+If DNS not resolving → problem found.
+
+---
+
+# 🟢 4️⃣ Test Connectivity (Very Important)
+
+Ping test:
+
+```bash
+ping 8.8.8.8
+```
+
+If ping works → network working.
+
+Test port:
+
+```bash
+telnet server-ip 80
+```
+
+or
+
+```bash
+nc -zv server-ip 80
+```
+
+If port closed → firewall issue.
+
+---
+
+# 🟢 5️⃣ Routing – How Traffic Travels
+
+See routing table:
+
+```bash
+ip route
+```
+
+Example:
+
+```
+default via 192.168.1.1 dev eth0
+```
+
+Means:
+All internet traffic goes through gateway 192.168.1.1
+
+If routing wrong → server cannot reach internet.
+
+Common cloud issue.
+
+---
+
+# 🟢 6️⃣ Firewall (Server Security Core)
+
+In Ubuntu:
+
+```bash
+sudo ufw status
+```
+
+Open port:
+
+```bash
+sudo ufw allow 80
+```
+
+In CentOS:
+
+```bash
+firewall-cmd --list-all
+```
+
+Real DevOps scenario:
+
+App deployed.
+Port open in server.
+But cloud security group blocking.
+
+Always check:
+
+1️⃣ OS firewall
+2️⃣ Cloud security group
+3️⃣ Network ACL
+
+---
+
+# 🟢 7️⃣ Reverse Proxy – NGINX Architecture
+
+Very important for DevOps.
+
+![Image](https://www.digitalocean.com/api/static-content/v1/images?src=https%3A%2F%2Fjournaldev.nyc3.cdn.digitaloceanspaces.com%2F2019%2F03%2Fnginx-reverse-proxy.png\&width=1920)
+
+![Image](https://substackcdn.com/image/fetch/f_auto%2Cq_auto%3Agood%2Cfl_progressive%3Asteep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F753aa5a0-09ed-4597-b56b-88d242692d46_2626x1330.png)
+
+![Image](https://i.sstatic.net/6qeu7.jpg)
+
+![Image](https://www.researchgate.net/publication/355917270/figure/fig14/AS%3A1086537349505066%401636062099398/Architecture-with-Reverse-Proxy-Load-Balancer.ppm)
+
+Without reverse proxy, architecture like this:
+
+```
+User → App directly
+```
+
+With reverse proxy:
+
+```
+User → Nginx → App (Port 8080)
+```
+
+Benefits:
+
+* SSL termination
+* Load balancing
+* Security
+* Rate limiting
+
+---
+
+## Example Nginx Reverse Proxy Config
+
+Edit:
+
+```bash
+sudo nano /etc/nginx/sites-available/default
+```
+
+Add:
+
+```nginx
+server {
+    listen 80;
+
+    location / {
+        proxy_pass http://localhost:8080;
+    }
+}
+```
+
+Restart:
+
+```bash
+sudo systemctl restart nginx
+```
+
+Now Nginx forwards traffic to your app.
+
+---
+
+# 🟢 8️⃣ Real DevOps Debugging Scenario
+
+Website not opening.
+
+Steps:
+
+1️⃣ Check service running
+2️⃣ Check port open
+3️⃣ Check firewall
+4️⃣ Check DNS
+5️⃣ Check routing
+6️⃣ Check logs
+
+Commands flow:
+
+```bash
+systemctl status nginx
+ss -tulnp
+ufw status
+nslookup domain.com
+ip route
+journalctl -xe
+```
+
+That’s professional debugging flow.
+
+---
+
+# 🟢 9️⃣ Cloud Networking Relation
+
+In AWS:
+
+* VPC
+* Subnet
+* Route table
+* Security group
+* Internet gateway
+
+In Azure:
+
+* VNet
+* Subnet
+* NSG
+* Route table
+
+Same concept.
+Different names.
+
+Because networking same everywhere.
+
+---
+
+# 🎯 Practical Tasks Now
+
+Run these:
+
+```bash
+ip addr
+ip route
+ss -tulnp
+nslookup google.com
+ping 8.8.8.8
+```
+
+Tell me:
+
+* Your IP
+* Default gateway
+* Which ports are open
+
+---
+
+Next lesson we go into:
+
+👉 Package management (apt, yum)
+👉 Log analysis advanced
+👉 Performance tuning
+👉 How Kubernetes networking works internally
+
+Now Linux networking base built.
+
+From here → Docker & K8s will make sense 10x better 💪🔥
+
