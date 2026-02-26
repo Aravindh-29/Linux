@@ -341,3 +341,367 @@ Tell me honestly:
 
 Or should I explain that again with a new real-life example? 💪🔥
 
+Mavvaa ❤️🔥 superrr… ippudu manam **real systemd production mode** lo unnām.
+Nee output ni line-by-line decode chestha. Calm ga chaduvu.
+
+---
+
+# 🔥 PART 1 — `systemctl list-units --type=service --state=running`
+
+You saw list like:
+
+```
+cron.service
+docker.service
+containerd.service
+rsyslog.service
+systemd-journald.service
+systemd-resolved.service
+...
+```
+
+---
+
+## 🧠 What This Command Shows?
+
+👉 Currently running background services.
+
+Every service = `.service` file.
+
+These are started by **systemd**.
+
+---
+
+# 🧠 Columns Meaning
+
+From header:
+
+```
+UNIT   LOAD   ACTIVE   SUB   DESCRIPTION
+```
+
+### 1️⃣ UNIT
+
+Service name.
+
+Example:
+
+```
+cron.service
+docker.service
+```
+
+---
+
+### 2️⃣ LOAD
+
+```
+loaded
+```
+
+Meaning:
+
+Service file exists and loaded properly.
+
+If “not-found” → service file missing.
+
+---
+
+### 3️⃣ ACTIVE
+
+High-level state.
+
+* active
+* inactive
+* failed
+
+---
+
+### 4️⃣ SUB
+
+Low-level detailed state.
+
+For services usually:
+
+```
+running
+```
+
+---
+
+# 🔥 Now Let’s Break One Service Deeply
+
+You ran:
+
+```bash
+systemctl status cron
+```
+
+Output:
+
+```
+Loaded: loaded (/lib/systemd/system/cron.service; enabled; ...)
+Active: active (running)
+Main PID: 186
+Memory: 412K
+CGroup: /system.slice/cron.service
+```
+
+Now I explain each line clearly.
+
+---
+
+# 🧠 Loaded Line
+
+```
+Loaded: loaded (/lib/systemd/system/cron.service; enabled; vendor preset: enabled)
+```
+
+Meaning:
+
+* Service file location:
+  `/lib/systemd/system/cron.service`
+
+* `enabled` means:
+  👉 It will start automatically at boot.
+
+If disabled → won’t auto start.
+
+---
+
+# 🧠 Active Line
+
+```
+Active: active (running)
+```
+
+Meaning:
+
+Service is currently running.
+
+If crashed:
+
+You’ll see:
+
+```
+failed
+```
+
+---
+
+# 🧠 Main PID
+
+```
+Main PID: 186
+```
+
+That is process ID.
+
+You can verify:
+
+```bash
+ps -p 186
+```
+
+---
+
+# 🧠 Memory
+
+```
+Memory: 412K
+```
+
+Cron using 412 KB RAM.
+
+Very small.
+
+---
+
+# 🧠 CGroup Line (Important Senior Concept)
+
+```
+CGroup: /system.slice/cron.service
+```
+
+systemd isolates services using control groups.
+
+This helps:
+
+* Resource control
+* Limits
+* Monitoring
+
+Senior-level container concept builds from here.
+
+---
+
+# 🧠 Log Section at Bottom
+
+You saw:
+
+```
+Feb 26 10:13:34 Started Regular background program...
+Feb 26 16:17:01 CRON session opened...
+```
+
+These are logs from journal.
+
+Equivalent command:
+
+```bash
+journalctl -u cron
+```
+
+---
+
+# 🔥 Why `ssh.service` Not Found?
+
+You ran:
+
+```bash
+systemctl status ssh
+```
+
+It says:
+
+```
+Unit ssh.service could not be found.
+```
+
+Meaning:
+
+👉 SSH server not installed in WSL.
+
+WSL usually doesn’t run SSH daemon.
+
+That’s why:
+
+```bash
+journalctl -u ssh
+```
+
+shows:
+
+```
+-- No entries --
+```
+
+Because service doesn’t exist.
+
+---
+
+# 🧠 Senior DevOps Must Know Commands
+
+### Start service
+
+```bash
+sudo systemctl start cron
+```
+
+### Stop service
+
+```bash
+sudo systemctl stop cron
+```
+
+### Restart service
+
+```bash
+sudo systemctl restart cron
+```
+
+### Enable at boot
+
+```bash
+sudo systemctl enable cron
+```
+
+### Disable at boot
+
+```bash
+sudo systemctl disable cron
+```
+
+---
+
+# 🔥 Real Production Scenario
+
+Suppose:
+
+Website down.
+
+You check:
+
+```bash
+systemctl status nginx
+```
+
+If:
+
+```
+Active: failed
+```
+
+Then check logs:
+
+```bash
+journalctl -u nginx -xe
+```
+
+That’s how debugging happens.
+
+---
+
+# 🧠 Very Important Concept
+
+Difference between:
+
+| Command | Meaning                    |
+| ------- | -------------------------- |
+| start   | start now                  |
+| enable  | start on boot              |
+| restart | stop + start               |
+| reload  | reload config without stop |
+
+---
+
+# 🎯 Now Practical Task (Production Mode)
+
+Let’s simulate service stop.
+
+Run:
+
+```bash
+sudo systemctl stop cron
+```
+
+Then check:
+
+```bash
+systemctl status cron
+```
+
+Then start again:
+
+```bash
+sudo systemctl start cron
+```
+
+Send output.
+
+I will explain what changes.
+
+---
+
+Mava ❤️
+We are now in real DevOps service management territory.
+
+Next after this:
+
+🔥 Log analysis deep
+🔥 Crash debugging
+🔥 Auto restart configuration
+
+Slow ga master avuthunnav 💪🔥
+
+
