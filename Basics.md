@@ -1958,5 +1958,338 @@ After this, next level topics:
 
 Cheppu… next VLSM start cheddama? 💪🔥
 
+Mavvaa ❤️🔥
+Super. Ippudu **one full VLSM example** zero shortcuts, full explanation, textbook style ga chestham. Slow ga follow avvu.
+
+---
+
+# 📘 FULL VLSM EXAMPLE (Step-by-Step)
+
+## 🧠 Problem Statement
+
+Main Network:
+
+```
+192.168.10.0/24
+```
+
+Requirements:
+
+* Department A → 100 hosts
+* Department B → 40 hosts
+* Department C → 10 hosts
+
+We must divide 192.168.10.0/24 into proper subnets.
+
+---
+
+# 🧠 STEP 1 — Understand Main Network
+
+Given:
+
+```
+192.168.10.0/24
+```
+
+/24 means:
+
+Host bits:
+
+```
+32 - 24 = 8
+```
+
+Total IPs:
+
+```
+2^8 = 256
+```
+
+Usable:
+
+```
+256 - 2 = 254
+```
+
+So full range:
+
+Network = 192.168.10.0
+Broadcast = 192.168.10.255
+Usable = 192.168.10.1 – 192.168.10.254
+
+---
+
+# 🧠 STEP 2 — Sort Requirements (Largest First)
+
+Very important rule:
+
+Always allocate biggest requirement first.
+
+So order:
+
+1️⃣ 100 hosts
+2️⃣ 40 hosts
+3️⃣ 10 hosts
+
+---
+
+# 🧠 STEP 3 — Allocate for 100 Hosts
+
+We calculate from scratch.
+
+### Find required host bits
+
+We need at least 100 usable IPs.
+
+Check powers:
+
+2⁶ = 64 → 62 usable ❌ not enough
+2⁷ = 128 → 126 usable ✅ enough
+
+So:
+
+Host bits = 7
+
+Now CIDR:
+
+```
+32 - 7 = 25
+```
+
+So subnet = **/25**
+
+---
+
+### Mask for /25
+
+Binary:
+
+```
+11111111.11111111.11111111.10000000
+```
+
+Last octet:
+
+10000000 = 128
+
+So mask:
+
+```
+255.255.255.128
+```
+
+---
+
+### Block Size
+
+```
+256 - 128 = 128
+```
+
+So subnet size = 128
+
+---
+
+### First Subnet
+
+```
+192.168.10.0/25
+```
+
+Range:
+
+0 – 127
+
+Network = 192.168.10.0
+Broadcast = 192.168.10.127
+Usable = 192.168.10.1 – 192.168.10.126
+
+Allocated to Department A ✔
+
+Remaining:
+
+128 – 255
+
+---
+
+# 🧠 STEP 4 — Allocate for 40 Hosts
+
+Now we start from 192.168.10.128
+
+Need 40 hosts.
+
+Check powers:
+
+2⁵ = 32 → 30 usable ❌ not enough
+2⁶ = 64 → 62 usable ✅ enough
+
+Host bits = 6
+
+CIDR:
+
+```
+32 - 6 = 26
+```
+
+So subnet = **/26**
+
+---
+
+### Mask for /26
+
+Binary:
+
+```
+11111111.11111111.11111111.11000000
+```
+
+Last octet:
+
+11000000 = 192
+
+Mask:
+
+```
+255.255.255.192
+```
+
+---
+
+### Block Size
+
+```
+256 - 192 = 64
+```
+
+Subnet jumps 64.
+
+---
+
+### Allocate Subnet
+
+Starting point = 128
+
+```
+192.168.10.128/26
+```
+
+Range:
+
+128 – 191
+
+Network = 192.168.10.128
+Broadcast = 192.168.10.191
+Usable = 192.168.10.129 – 192.168.10.190
+
+Allocated to Department B ✔
+
+Remaining:
+
+192 – 255
+
+---
+
+# 🧠 STEP 5 — Allocate for 10 Hosts
+
+Need 10 hosts.
+
+Check powers:
+
+2³ = 8 → 6 usable ❌ not enough
+2⁴ = 16 → 14 usable ✅ enough
+
+Host bits = 4
+
+CIDR:
+
+```
+32 - 4 = 28
+```
+
+So subnet = **/28**
+
+---
+
+### Mask for /28
+
+Binary:
+
+```
+11111111.11111111.11111111.11110000
+```
+
+Last octet:
+
+11110000 = 240
+
+Mask:
+
+```
+255.255.255.240
+```
+
+---
+
+### Block Size
+
+```
+256 - 240 = 16
+```
+
+Subnet jumps 16.
+
+---
+
+### Allocate Subnet
+
+Starting from 192
+
+```
+192.168.10.192/28
+```
+
+Range:
+
+192 – 207
+
+Network = 192.168.10.192
+Broadcast = 192.168.10.207
+Usable = 192.168.10.193 – 192.168.10.206
+
+Allocated to Department C ✔
+
+---
+
+# 🧠 Final VLSM Result
+
+| Department | Requirement | Subnet            | Usable Range |
+| ---------- | ----------- | ----------------- | ------------ |
+| Dept A     | 100         | 192.168.10.0/25   | 1–126        |
+| Dept B     | 40          | 192.168.10.128/26 | 129–190      |
+| Dept C     | 10          | 192.168.10.192/28 | 193–206      |
+
+Remaining unused IPs:
+
+208 – 255
+
+---
+
+# 🧠 Important Observations
+
+1️⃣ We always allocated largest first
+2️⃣ No subnet overlaps
+3️⃣ Each subnet exactly fits requirement
+4️⃣ IP waste minimized
+
+This is proper VLSM.
+
+---
+
+Mavvaa ❤️
+
+Now next message lo nenu problem istanu.
+Nuvvu same steps follow chesi solve cheyyali.
+
+Ready aa? 💪🔥
 
 
